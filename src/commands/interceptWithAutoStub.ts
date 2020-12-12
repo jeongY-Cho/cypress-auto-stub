@@ -13,7 +13,7 @@ export function interceptWithAutoStub(
   alias: string
 ) {
   // get the stub
-  cy.readFile(fixturePath, { log: false }).then((res) => {
+  return cy.readFile(fixturePath, { log: false }).then((res) => {
     // set cookies from stub
     if (res.headers["set-cookie"]) {
       res.headers["set-cookie"].forEach((cookieStr: string) => {
@@ -34,8 +34,10 @@ export function interceptWithAutoStub(
     res.headers["x-auto-stub-path"] = fixturePath
 
     // now set intercept with alias
-    cy.intercept(matcher, (req) => {
-      req.reply(res)
-    }).as(alias)
+    return cy
+      .intercept(matcher, (req) => {
+        req.reply(res)
+      })
+      .as(alias)
   })
 }

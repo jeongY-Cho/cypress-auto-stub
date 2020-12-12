@@ -2,7 +2,8 @@
   "name": "@jeongy-cho/cypress-auto-stub",
   "version": "0.1.0",
   "description": "Automatically stub requests",
-  "main": "lib/support.js",
+  "main": "lib/commands/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "test": "jest"
   },
@@ -23,11 +24,13 @@
     "url": "https://github.com/jeongY-Cho/cypress-auto-stub/issues"
   },
   "homepage": "https://github.com/jeongY-Cho/cypress-auto-stub#readme",
+  "peerDependencies": {
+    "cypress": "^6.1.0"
+  },
   "devDependencies": {
     "@types/node": "^14.14.12",
     "@typescript-eslint/eslint-plugin": "^4.9.1",
     "@typescript-eslint/parser": "^4.9.1",
-    "cypress": "^6.1.0",
     "eslint": "^7.15.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^7.0.0",
@@ -35,5 +38,8 @@
     "eslint-plugin-import": "^2.22.1",
     "prettier": "^2.2.1",
     "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "cypress": "^6.1.0"
   }
 }

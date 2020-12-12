@@ -1,8 +1,10 @@
 import { RouteMatcher } from "cypress/types/net-stubbing"
+import { AutoStubOptions } from "../../types"
+
 import { interceptWithAutoStub } from "./interceptWithAutoStub"
+import { interceptRequestForSave } from "./interceptRequestToSave"
 
 import { generatePath } from "../utils"
-import { interceptRequestForSave } from "./interceptRequestToSave"
 
 /**
  * loaded configs
@@ -24,30 +26,52 @@ Cypress.Commands.add(
    * @param alias alias to name auto stub
    * @param matcher url matcher
    */
-  function autoStub(alias: string, matcher: RouteMatcher) {
+  function autoStub(
+    alias: string,
+    matcher: RouteMatcher,
+    options?: AutoStubOptions
+  ) {
+    /**
+     * Type Checking
+     */
     if (typeof alias !== "string") {
       throw new TypeError("alias is of incorrect type. Should be `string`")
     }
 
+    if (options && typeof options.folderPath !== "string") {
+      throw new TypeError(
+        "options.folderPath is of incorrect type. Should be `string`"
+      )
+    }
+    /** */
+
+    const combinedOptions: Required<AutoStubOptions> = {
+      folderPath: config.autoStubFolderPath,
+      ignore: config.ignoreAutoStubs,
+      refresh: config.refreshAutoStubs,
+      ...options,
+    }
+
     const fixturePath = generatePath(
-      config.autoStubFolderPath,
+      combinedOptions.folderPath,
       // @ts-expect-error || no def for `this`
       this.test.titlePath(),
       alias
     )
 
-    if (config.ignoreAutoStubs) {
+    if (combinedOptions.ignore) {
+      cy.log(`Auto Stub: Ignoring auto stub for @${alias}`)
       return cy.intercept(matcher).as(alias)
+    }
+
+    if (combinedOptions.refresh) {
+      cy.log(`Auto Stub: refreshing stub for @${alias}`)
+      return interceptRequestForSave(fixturePath, matcher, alias)
     }
 
     return cy
       .task("doesFixtureExist", fixturePath, { log: false })
       .then((exists) => {
-        if (config.refreshAutoStubs) {
-          cy.log(`Auto Stub: refreshing stub for @${alias}`)
-          return interceptRequestForSave(fixturePath, matcher, alias)
-        }
-
         if (exists) {
           cy.log(`Auto Stub: will stub @${alias}`)
           return interceptWithAutoStub(fixturePath, matcher, alias)

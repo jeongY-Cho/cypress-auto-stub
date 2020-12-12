@@ -12,10 +12,12 @@ export function interceptRequestForSave(
   matcher: RouteMatcher,
   alias: string
 ) {
-  cy.intercept(matcher, (req) => {
-    req.reply((res) => {
-      Cache.add(fixturePath, res)
-      return res
+  return cy
+    .intercept(matcher, (req) => {
+      req.reply((res) => {
+        Cache.add(fixturePath, res)
+        return res
+      })
     })
-  }).as(alias)
+    .as(alias)
 }
