@@ -1,11 +1,10 @@
 {
-  "name": "cypress-auto-stub",
+  "name": "@jeongy-cho/cypress-auto-stub",
   "version": "0.1.0",
   "description": "Automatically stub requests",
-  "main": "lib/commands/index.js",
+  "main": "lib/support.js",
   "scripts": {
-    "test": "jest",
-    "build": "tsc"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
