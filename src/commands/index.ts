@@ -25,6 +25,10 @@ Cypress.Commands.add(
    * @param matcher url matcher
    */
   function autoStub(alias: string, matcher: RouteMatcher) {
+    if (typeof alias !== "string") {
+      throw new TypeError("alias is of incorrect type. Should be `string`")
+    }
+
     const fixturePath = generatePath(
       config.autoStubFolderPath,
       // @ts-expect-error || no def for `this`
